@@ -30,8 +30,8 @@ for f in os.listdir(sys.argv[3]):
 # Generate ARFF file attribute section.
 print '@relation movie-review'
 for term in TERMS:
-    print '@attribute', term, '{1, 0}'
-print '@attribute', '*class*', '{pos, neg}'
+    print '@attribute', term, 'NUMERIC'
+print '@attribute', '*class*', '{pos,neg}'
 print
 
 # Generate ARFF file data secion.
