@@ -10,6 +10,7 @@ if len(sys.argv) != 2:
 # The first parameter (sys.argv[1]) should be the file name of stop words.
 # All stop words will be loaded to the list stopwords.
 stopwords = []
+
 with open(sys.argv[1], 'r') as f:
     stopwords = f.read().splitlines()
 
