@@ -7,7 +7,7 @@
 	github: 
 
 
-##STEP 1:
+## STEP 1:
 	 binary term-presence values to term frequencies to study the effect of weighting factor in sentiment classifications.
 
 	 - trim each document in trainning corpus (pos and neg) removing all stop
@@ -72,11 +72,11 @@
 				$ python2.7 ../ressources/scripts/arff-freq_by_qty.py train/v-words.txt test/pos-words test/neg-words >test/test-1-by_qty.arff
 
 
-#Results:
+# Results:
 
-##WEKA Training:
+## WEKA Training:
 				
-##SVM (TRAIN):
+## SVM (TRAIN):
 
 					=== Run information ===
 
@@ -113,7 +113,7 @@
 					 590 210 |   b = neg
 
 
-##SVM (TEST):
+## SVM (TEST):
 					=== Run information ===
 
 					Scheme:       weka.classifiers.functions.LibSVM -S 0 -K 2 -D 3 -G 0.0 -R 0.0 -N 0.5 -M 40.0 -C 1.0 -E 0.001 -P 0.1 -model /Users/jessefilho/Documents/BDMA/M2/NPL/weka -seed 1
