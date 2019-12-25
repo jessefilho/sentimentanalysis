@@ -30,7 +30,7 @@ for f in os.listdir(sys.argv[3]):
 # Generate ARFF file attribute section.
 print '@relation movie-review'
 for term in TERMS:
-    print '@attribute', term, 'NUMERIC'
+    print '@attribute', term,'NUMERIC'
 print '@attribute', '*class*', '{pos,neg}'
 print
 
@@ -40,11 +40,11 @@ for p in POS:
     with open(p, 'r') as f:
         words = f.read().split()
         for term in TERMS:
-            print words.count(term)/len(words),
+            print words.count(term)/len(TERMS),
         print 'pos'
 for n in NEG:
     with open(n, 'r') as f:
         words = f.read().split()
         for term in TERMS:
-            print words.count(term)/len(words),
+            print words.count(term)/len(TERMS),
         print 'neg'

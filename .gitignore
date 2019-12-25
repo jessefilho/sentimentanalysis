@@ -1,2 +1,4 @@
 corpus/train/train-*.txt
 corpus/test/test-*.text
+corpus/train-tagged
+corpus/test-tagged
