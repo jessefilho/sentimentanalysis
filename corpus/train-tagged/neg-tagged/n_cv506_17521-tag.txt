@@ -1,0 +1,10 @@
+NNfilm
+VBbe
+RBextraordinarily
+JJhorrendous
+VBbe
+RBnot
+VBgo
+VBwaste
+JJmore
+NNword
