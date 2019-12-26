@@ -316,14 +316,18 @@
 							for trainning:
 								$ mkdir train-tagged/pos-tagged train-tagged/neg-tagged
 								
+								
 							for test too:
 								$ mkdir test-tagged/neg-tagged test-tagged/pos-tagged
+
 					- execute the trim-tagged.py:
+
 						- for train dataset:
 							- for pos-tagged:
 								$ for f in train-tagged/pos/*.txt; do python2.7 ../ressources/scripts/trim-tagged.py ../ressources/stopwords.txt <$f >train-tagged/pos-tagged/`basename $f`; done
 							- for neg-tagged:
 								$ for f in train-tagged/neg/*.txt; do python2.7 ../ressources/scripts/trim-tagged.py ../ressources/stopwords.txt <$f >train-tagged/neg-tagged/`basename $f`; done
+
 						- for test dataset:
 							- for pos-tagged:
 								$ for f in test-tagged/pos/*.txt; do python2.7 ../ressources/scripts/trim-tagged.py ../ressources/stopwords.txt <$f >test-tagged/pos-tagged/`basename $f`; done
@@ -385,7 +389,6 @@
 			   a   b   <-- classified as
 			 613 187 |   a = pos
 			 131 669 |   b = neg
-
 ## RandomForest (TEST TAGGED):
 			RandomForest
 
@@ -422,8 +425,6 @@
 			  a  b   <-- classified as
 			 75 25 |  a = pos
 			 13 87 |  b = neg
-
-
 ## NaiveBayes (TRAIN TAGGED):
 			=== Stratified cross-validation ===
 			=== Summary ===
@@ -477,7 +478,6 @@
 			  a  b   <-- classified as
 			 78 22 |  a = pos
 			 34 66 |  b = neg
-
 ## SVM (TRAIN TAGGED):
 			=== Classifier model (full training set) ===
 
@@ -509,7 +509,6 @@
 			   a   b   <-- classified as
 			   0 800 |   a = pos
 			   0 800 |   b = neg
-
 ## SVM (TEST TAGGED):
 			   === Evaluation on test set ===
 
@@ -538,3 +537,30 @@
 				   a   b   <-- classified as
 				   1  99 |   a = pos
 				   0 100 |   b = neg
+
+
+## TASK 2 - NGRAM
+		Create a folder for the study of ngram:
+			$ mkdir train-ngram
+			$ mkdir train-ngram/pos-ngram-tagged train-ngram/neg-ngram-tagged
+
+		- Assumption that the token arrive in order concat until ngram quantity:
+
+			$ for f in train-tagged/pos/*.txt; do python2.7 ../ressources/scripts/ngram-tagged.py ../ressources/stopwords.txt <$f >train-ngram/pos-ngram-tagged/`basename $f`; done
+
+			$ for f in train-tagged/pos/*.txt; do python2.7 ../ressources/scripts/ngram-tagged.py ../ressources/stopwords.txt <$f >train-ngram/neg-ngram-tagged/`basename $f`; done
+
+
+			$ for f in test-tagged/pos/*.txt; do python2.7 ../ressources/scripts/ngram-tagged.py ../ressources/stopwords.txt <$f >test-ngram/pos-ngram-tagged/`basename $f`; done
+
+		- Combine the two classes (train-tagged)
+			$ cat train-ngram/pos-ngram-tagged/*.txt > train-ngram/pos-ngram.txt
+			$ cat train-ngram/neg-ngram-tagged/*.txt > train-ngram/neg-ngram.txt
+
+		$ python2.7 ../ressources/scripts/vocab.py train-ngram/pos-ngram.txt train-ngram/neg-ngram.txt 0.1 5 > train-ngram/v-tagged.txt
+
+		$ python2.7 ../ressources/scripts/arff-frenqueceterm.py train-ngram/v-tagged.txt train-ngram/pos-ngram-tagged/ train-ngram/neg-ngram-tagged/ > train-ngram/train-ngram.arff
+
+
+
+

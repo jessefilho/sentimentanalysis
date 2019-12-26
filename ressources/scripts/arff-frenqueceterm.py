@@ -40,11 +40,18 @@ for p in POS:
     with open(p, 'r') as f:
         words = f.read().split()
         for term in TERMS:
-            print words.count(term)/len(TERMS),
+            if term in words:
+                print words.count(term)/len(words),
+            else:
+                print 0.0,
+            
         print 'pos'
 for n in NEG:
     with open(n, 'r') as f:
         words = f.read().split()
         for term in TERMS:
-            print words.count(term)/len(TERMS),
+            if term in words:
+                print words.count(term)/len(words),
+            else:
+                print 0.0,
         print 'neg'
