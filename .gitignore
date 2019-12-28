@@ -3,3 +3,4 @@ corpus/test/test-*.text
 corpus/train-tagged/*
 corpus/test-tagged/*
 corpus/train-ngram/*
+corpus/*
