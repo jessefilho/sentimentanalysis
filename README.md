@@ -4,33 +4,29 @@
 		FERREIRA, Jesse.
 		TALBI, Samir.
 
-	github: 
+	More details on github: https://github.com/jessefilho/sentimentanalysis
 
 
 ## STEP 1 - Term Frequencies:
-	  To study the effect of weighting factor in sentiment classifications, we choose to do the ratio of the term by all terms. The results are presented at results section.
-
-	 - trim each document in trainning corpus (pos and neg) removing all stop
-	words and non-alphanumeric words. The out result files will be to new directories
-	called:
+	To study the effect of weighting factor in sentiment classifications, we choose to do the ratio of the term by POS. The results are presented at results section.
+	- trim each document in trainning corpus (pos and neg) removing all stop words and non-alphanumeric words. The out result files will be to new directories
+	- trim train folder:	
+		called:
 		pos-words: train/pos-words/
 		neg-words: train/neg-words/
-
+    - trim test folder:
 		pos-words: test/pos-words/
 		neg-words: test/neg-words/
-
 	- create folders into corpus/:
 		for trainning:
 			$ mkdir train/pos-words/
 			$ mkdir train/neg-words/
 		for test too:
 			$ mkdir test/pos-words/ test/neg-words/
-
 	- then to trim, execute the follow command (program python 2.7):
 		- do chmod 745 for the file trim.py, then run:
 			$ sudo chmod 745 trim.py
-
-		execute the trim.py:
+		- execute the trim.py:
 			- for train dataset:
 				- for pos-words:
 					$ for f in train/pos/*.txt; do python2.7 ../ressources/scripts/trim.py ../ressources/stopwords.txt <$f >train/pos-words/`basename $f`; done
@@ -41,243 +37,213 @@
 					$ for f in test/pos/*.txt; do python2.7 ../ressources/scripts/trim.py ../ressources/stopwords.txt <$f >test/pos-words/`basename $f`; done
 				- for neg-words:
 					$ for f in test/neg/*.txt; do python2.7 ../ressources/scripts/trim.py ../ressources/stopwords.txt <$f >test/neg-words/`basename $f`; done
-
-
 			- Combine the two classes (pos and neg) of trimmed training corpus to two individual files:
 				- for train:
 					train/pos-words.txt
 					train/neg-words.txt
-
 					$ cat train/pos-words/*.txt >train/pos-words.txt
 					$ cat train/neg-words/*.txt >train/neg-words.txt
 				- for test:
 					test/pos-words.txt
 					test/neg-words.txt
-
+				- Combination :
 					$ cat test/pos-words/*.txt >test/pos-words.txt
 					$ cat test/neg-words/*.txt >test/neg-words.txt
-
-
+		    - Create the vocabular, using the third(0.45) and fourth(20)
+				parameters to regulate the quantity of terms :
+				$ python2.7 ../ressources/scripts/vocab.py train/pos-words.txt train/neg-words.txt 0.45 15 > train/v-tagged.txt
 		- Get term's frenquence:
-
 			- for train, by ratio. For each term count if it is present, then divise by the total of terms:
-				$ python2.7 ../ressources/scripts/arff-frenqueceterm.py train/v-words.txt train/pos-words train/neg-words >train/train-1-fterm.arff
-			- for train, by quantity:
-				$ python2.7 ../ressources/scripts/arff-freq_by_qty.py train/v-words.txt train/pos-words train/neg-words >train/train-1-by_qty.arff
-
-
+				$ python2.7 ../ressources/scripts/arff-frenqueceterm.py train/v-words.txt train/pos-words train/neg-words >train/train-trimmed.arff
 			- for test, by ratio:
-				$ python2.7 ../ressources/scripts/arff-frenqueceterm.py train/v-words.txt test/pos-words test/neg-words >test/test-1-fterm.arff
-			- for test, by quantity:
-				$ python2.7 ../ressources/scripts/arff-freq_by_qty.py train/v-words.txt test/pos-words test/neg-words >test/test-1-by_qty.arff
+				$ python2.7 ../ressources/scripts/arff-frenqueceterm.py train/v-words.txt test/pos-words test/neg-words >test/test-trimmed.arff
+			
+## LibLinear (TRAIN)
 
+	=== Run information ===
 
-# Results:
+	Scheme:       weka.classifiers.functions.LibLINEAR -S 1 -C 1.0 -E 0.001 -B 1.0 -L 0.1 -I 1000
+	Relation:     movie-review
+	Instances:    1600
+	Attributes:   9304
+	              [list of attributes omitted]
+	Test mode:    10-fold cross-validation
 
-## WEKA Training Frequence of Terms:
-				
-## SVM (TRAIN):
+	=== Classifier model (full training set) ===
 
-					=== Run information ===
+	LibLINEAR wrapper
 
-					Scheme:       weka.classifiers.functions.LibSVM -S 0 -K 2 -D 3 -G 0.0 -R 0.0 -N 0.5 -M 40.0 -C 1.0 -E 0.001 -P 0.1 -model /Users/jessefilho/Documents/BDMA/M2/NPL/weka -seed 1
-					Relation:     movie-review
-					Instances:    1600
-					Attributes:   9304
-					              [list of attributes omitted]
-					Test mode:    5-fold cross-validation  
+	Model bias=1.0 nr_class=2 nr_feature=9304 solverType=L2R_L2LOSS_SVC_DUAL
 
-					=== Stratified cross-validation ===
-					=== Summary ===
+	Time taken to build model: 0.62 seconds
 
-					Correctly Classified Instances         964               60.25   %
-					Incorrectly Classified Instances       636               39.75   %
-					Kappa statistic                          0.205 
-					Mean absolute error                      0.3975
-					Root mean squared error                  0.6305
-					Relative absolute error                 79.5    %
-					Root relative squared error            126.0952 %
-					Total Number of Instances             1600     
+	=== Stratified cross-validation ===
+	=== Summary ===
 
-					=== Detailed Accuracy By Class ===
+	Correctly Classified Instances        1382               86.375  %
+	Incorrectly Classified Instances       218               13.625  %
+	Kappa statistic                          0.7275
+	Mean absolute error                      0.1363
+	Root mean squared error                  0.3691
+	Relative absolute error                 27.25   %
+	Root relative squared error             73.8241 %
+	Total Number of Instances             1600     
 
-					                 TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
-					                 0.943    0.738    0.561      0.943    0.703      0.280    0.603     0.558     pos
-					                 0.263    0.058    0.820      0.263    0.398      0.280    0.603     0.584     neg
-					Weighted Avg.    0.603    0.398    0.691      0.603    0.551      0.280    0.603     0.571     
+	=== Detailed Accuracy By Class ===
 
-					=== Confusion Matrix ===
+	                 TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
+	                 0.876    0.149    0.855      0.876    0.865      0.728    0.864     0.811     pos
+	                 0.851    0.124    0.873      0.851    0.862      0.728    0.864     0.818     neg
+	Weighted Avg.    0.864    0.136    0.864      0.864    0.864      0.728    0.864     0.814     
 
-					   a   b   <-- classified as
-					 754  46 |   a = pos
-					 590 210 |   b = neg
+	=== Confusion Matrix ===
 
+	   a   b   <-- classified as
+	 701  99 |   a = pos
+	 119 681 |   b = neg
+## LibLinear (TEST)
 
-## SVM (TEST):
-					=== Run information ===
+	Time taken to build model: 0.22 seconds
 
-					Scheme:       weka.classifiers.functions.LibSVM -S 0 -K 2 -D 3 -G 0.0 -R 0.0 -N 0.5 -M 40.0 -C 1.0 -E 0.001 -P 0.1 -model /Users/jessefilho/Documents/BDMA/M2/NPL/weka -seed 1
-					Relation:     movie-review
-					Instances:    1600
-					Attributes:   9304
-					              [list of attributes omitted]
-					Test mode:    user supplied test set:  size unknown (reading incrementally)
+	=== Evaluation on test set ===
 
-					=== Classifier model (full training set) ===
+	Time taken to test model on supplied test set: 0.22 seconds
 
-					LibSVM wrapper, original code by Yasser EL-Manzalawy (= WLSVM)
+	=== Summary ===
 
-					Time taken to build model: 7.08 seconds
+	Correctly Classified Instances         175               87.5    %
+	Incorrectly Classified Instances        25               12.5    %
+	Kappa statistic                          0.75  
+	Mean absolute error                      0.125 
+	Root mean squared error                  0.3536
+	Relative absolute error                 25      %
+	Root relative squared error             70.7107 %
+	Total Number of Instances              200     
 
-					=== Evaluation on test set ===
+	=== Detailed Accuracy By Class ===
 
-					Time taken to test model on supplied test set: 1.28 seconds
+	                 TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
+	                 0.880    0.130    0.871      0.880    0.876      0.750    0.875     0.827     pos
+	                 0.870    0.120    0.879      0.870    0.874      0.750    0.875     0.830     neg
+	Weighted Avg.    0.875    0.125    0.875      0.875    0.875      0.750    0.875     0.828     
 
-					=== Summary ===
+	=== Confusion Matrix ===
 
-					Correctly Classified Instances         116               58      %
-					Incorrectly Classified Instances        84               42      %
-					Kappa statistic                          0.16  
-					Mean absolute error                      0.42  
-					Root mean squared error                  0.6481
-					Relative absolute error                 84      %
-					Root relative squared error            129.6148 %
-					Total Number of Instances              200     
+	  a  b   <-- classified as
+	 88 12 |  a = pos
+	 13 87 |  b = neg				
+## SVM SPegasos (TRAIN):
+	=== Run information ===
 
-					=== Detailed Accuracy By Class ===
+	Scheme:       weka.classifiers.functions.SPegasos -F 0 -L 1.0E-4 -E 500
+	Relation:     movie-review
+	Instances:    1600
+	Attributes:   9304
+	              [list of attributes omitted]
+	Test mode:    10-fold cross-validation
 
-					                 TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
-					                 0.940    0.780    0.547      0.940    0.691      0.231    0.580     0.544     pos
-					                 0.220    0.060    0.786      0.220    0.344      0.231    0.580     0.563     neg
-					Weighted Avg.    0.580    0.420    0.666      0.580    0.517      0.231    0.580     0.553     
+	=== Classifier model (full training set) ===
 
-					=== Confusion Matrix ===
+	Loss function: Hinge loss (SVM)
+	Time taken to build model: 18.48 seconds
 
-					  a  b   <-- classified as
-					 94  6 |  a = pos
-					 78 22 |  b = neg
+	=== Stratified cross-validation ===
+	=== Summary ===
 
-## NaiveBayes (TRAIN):
+	Correctly Classified Instances        1414               88.375  %
+	Incorrectly Classified Instances       186               11.625  %
+	Kappa statistic                          0.7675
+	Mean absolute error                      0.1163
+	Root mean squared error                  0.341 
+	Relative absolute error                 23.25   %
+	Root relative squared error             68.1909 %
+	Total Number of Instances             1600     
 
-					=== Run information ===
+	=== Detailed Accuracy By Class ===
 
-					Scheme:       weka.classifiers.bayes.NaiveBayes 
-					Relation:     movie-review
-					Instances:    1600
-					Attributes:   9304
-					              [list of attributes omitted]
-					Test mode:    5-fold cross-validation
+	                 TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
+	                 0.890    0.123    0.879      0.890    0.884      0.768    0.884     0.837     pos
+	                 0.878    0.110    0.889      0.878    0.883      0.768    0.884     0.841     neg
+	Weighted Avg.    0.884    0.116    0.884      0.884    0.884      0.768    0.884     0.839     
 
-					=== Stratified cross-validation ===
-					=== Summary ===
+	=== Confusion Matrix ===
 
-					Correctly Classified Instances        1231               76.9375 %
-					Incorrectly Classified Instances       369               23.0625 %
-					Kappa statistic                          0.5388
-					Mean absolute error                      0.2306
-					Root mean squared error                  0.4798
-					Relative absolute error                 46.1216 %
-					Root relative squared error             95.9695 %
-					Total Number of Instances             1600     
+	   a   b   <-- classified as
+	 712  88 |   a = pos
+	  98 702 |   b = neg
+## SVM SPegasos (TEST):
+	=== Evaluation on test set ===
 
-					=== Detailed Accuracy By Class ===
+	Time taken to test model on supplied test set: 0.34 seconds
 
-					                 TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
-					                 0.725    0.186    0.796      0.725    0.759      0.541    0.786     0.737     pos
-					                 0.814    0.275    0.747      0.814    0.779      0.541    0.784     0.720     neg
-					Weighted Avg.    0.769    0.231    0.772      0.769    0.769      0.541    0.785     0.729     
+	=== Summary ===
 
-					=== Confusion Matrix ===
+	Correctly Classified Instances         176               88      %
+	Incorrectly Classified Instances        24               12      %
+	Kappa statistic                          0.76  
+	Mean absolute error                      0.12  
+	Root mean squared error                  0.3464
+	Relative absolute error                 24      %
+	Root relative squared error             69.282  %
+	Total Number of Instances              200     
 
-					   a   b   <-- classified as
-					 580 220 |   a = pos
-					 149 651 |   b = neg
+	=== Detailed Accuracy By Class ===
 
-## NaiveBayes (TEST):
+	             TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
+	             0.870    0.110    0.888      0.870    0.879      0.760    0.880     0.837     pos
+	             0.890    0.130    0.873      0.890    0.881      0.760    0.880     0.832     neg
+	Weighted Avg.    0.880    0.120    0.880      0.880    0.880      0.760    0.880     0.834     
 
-					=== Run information ===
+	=== Confusion Matrix ===
 
-					Scheme:       weka.classifiers.bayes.NaiveBayes 
-					Relation:     movie-review
-					Instances:    1600
-					Attributes:   9304
-					              [list of attributes omitted]
-					Test mode:    user supplied test set:  size unknown (reading incrementally)
-
-					=== Evaluation on test set ===
-
-					Time taken to test model on supplied test set: 1.03 seconds
-
-					=== Summary ===
-
-					Correctly Classified Instances         148               74      %
-					Incorrectly Classified Instances        52               26      %
-					Kappa statistic                          0.48  
-					Mean absolute error                      0.26  
-					Root mean squared error                  0.5099
-					Relative absolute error                 52      %
-					Root relative squared error            101.9804 %
-					Total Number of Instances              200     
-
-					=== Detailed Accuracy By Class ===
-
-					                 TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
-					                 0.680    0.200    0.773      0.680    0.723      0.483    0.745     0.699     pos
-					                 0.800    0.320    0.714      0.800    0.755      0.483    0.756     0.688     neg
-					Weighted Avg.    0.740    0.260    0.744      0.740    0.739      0.483    0.751     0.694     
-
-					=== Confusion Matrix ===
-
-					  a  b   <-- classified as
-					 68 32 |  a = pos
-					 20 80 |  b = neg
-
+	a  b   <-- classified as
+	87 13 |  a = pos
+	11 89 |  b = neg
 ## RandomForest (TRAIN):
 
-					=== Run information ===
+		=== Run information ===
 
-					Scheme:       weka.classifiers.trees.RandomForest -P 100 -I 100 -num-slots 1 -K 0 -M 1.0 -V 0.001 -S 1
-					Relation:     movie-review
-					Instances:    1600
-					Attributes:   9304
-					              [list of attributes omitted]
-					Test mode:    10-fold cross-validation
+		Scheme:       weka.classifiers.trees.RandomForest -P 100 -I 100 -num-slots 1 -K 0 -M 1.0 -V 0.001 -S 1
+		Relation:     movie-review
+		Instances:    1600
+		Attributes:   9304
+		              [list of attributes omitted]
+		Test mode:    10-fold cross-validation
 
-					=== Classifier model (full training set) ===
+		=== Classifier model (full training set) ===
 
-					RandomForest
+		RandomForest
 
-					Bagging with 100 iterations and base learner
+		Bagging with 100 iterations and base learner
 
-					weka.classifiers.trees.RandomTree -K 0 -M 1.0 -V 0.001 -S 1 -do-not-check-capabilities
+		weka.classifiers.trees.RandomTree -K 0 -M 1.0 -V 0.001 -S 1 -do-not-check-capabilities
 
-					Time taken to build model: 21.65 seconds
+		Time taken to build model: 21.65 seconds
 
-					=== Stratified cross-validation ===
-					=== Summary ===
+		=== Stratified cross-validation ===
+		=== Summary ===
 
-					Correctly Classified Instances        1307               81.6875 %
-					Incorrectly Classified Instances       293               18.3125 %
-					Kappa statistic                          0.6338
-					Mean absolute error                      0.4251
-					Root mean squared error                  0.4338
-					Relative absolute error                 85.01   %
-					Root relative squared error             86.7553 %
-					Total Number of Instances             1600     
+		Correctly Classified Instances        1307               81.6875 %
+		Incorrectly Classified Instances       293               18.3125 %
+		Kappa statistic                          0.6338
+		Mean absolute error                      0.4251
+		Root mean squared error                  0.4338
+		Relative absolute error                 85.01   %
+		Root relative squared error             86.7553 %
+		Total Number of Instances             1600     
 
-					=== Detailed Accuracy By Class ===
+		=== Detailed Accuracy By Class ===
 
-					                 TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
-					                 0.786    0.153    0.838      0.786    0.811      0.635    0.891     0.891     pos
-					                 0.848    0.214    0.799      0.848    0.822      0.635    0.891     0.873     neg
-					Weighted Avg.    0.817    0.183    0.818      0.817    0.817      0.635    0.891     0.882     
+		                 TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
+		                 0.786    0.153    0.838      0.786    0.811      0.635    0.891     0.891     pos
+		                 0.848    0.214    0.799      0.848    0.822      0.635    0.891     0.873     neg
+		Weighted Avg.    0.817    0.183    0.818      0.817    0.817      0.635    0.891     0.882     
 
-					=== Confusion Matrix ===
+		=== Confusion Matrix ===
 
-					   a   b   <-- classified as
-					 629 171 |   a = pos
-					 122 678 |   b = neg
-
+		   a   b   <-- classified as
+		 629 171 |   a = pos
+		 122 678 |   b = neg
 ## RandomForest (TEST):
 					Time taken to build model: 22.79 seconds
 
@@ -330,13 +296,14 @@
 
 						- for test dataset:
 							- for pos-tagged:
-								$ for f in test-tagged/pos/*.txt; do python2.7 ../ressources/scripts/trim-tagged.py ../ressources/stopwords.txt <$f >test-tagged/pos-tagged/`basename $f`; done
+								$ for f in test-tagged/pos/*.txt; do python2.7 ../ressources/scripts/trim-tagged2.py ../ressources/stopwords.txt <$f >test-tagged/pos-tagged/`basename $f`; done
 							- for neg-tagged:
-								$ for f in test-tagged/neg/*.txt; do python2.7 ../ressources/scripts/trim-tagged.py ../ressources/stopwords.txt <$f >test-tagged/neg-tagged/`basename $f`; done
+								$ for f in test-tagged/neg/*.txt; do python2.7 ../ressources/scripts/trim-tagged2.py ../ressources/stopwords.txt <$f >test-tagged/neg-tagged/`basename $f`; done
 
 					- Combine the two classes (train-tagged)
-							$ cat train-tagged/pos-tagged/*.txt > train-tagged/pos-tagged.txt
+							$ cat train-tagged/pos-tagged/*.txt > train-tagged/pos-tagged.txt 
 							$ cat train-tagged/neg-tagged/*.txt > train-tagged/neg-tagged.txt
+							
 					- Combine the two classes (test-tagged)
 							$ cat test-tagged/pos-tagged/*.txt > test-tagged/pos-tagged.txt
 							$ cat test-tagged/neg-tagged/*.txt > test-tagged/neg-tagged.txt
@@ -346,6 +313,10 @@
 					  all attributes appearing in the vector representation of documents.
 					  		- 86% :
 					  		$ python2.7 ../ressources/scripts/vocab.py train-tagged/pos-tagged.txt train-tagged/neg-tagged.txt 0.45 15 > train-tagged/v-tagged.txt
+
+					  		$ python2.7 ../ressources/scripts/vocab.py train-tagged/pos-tagged.txt train-tagged/neg-tagged.txt 0.9 5 > train-tagged/v-tagged.txt
+
+					  		python2.7 ../ressources/scripts/vocab.py train-tagged/pos-tagged.txt train-tagged/neg-tagged.txt 0.9 10 > train-tagged/v-tagged.txt
 
 
 					  		
@@ -391,153 +362,203 @@
 			 674 126 |   a = pos
 			  89 711 |   b = neg
 ## RandomForest (TEST TAGGED):
+			=== Classifier model (full training set) ===
+
 			RandomForest
 
 			Bagging with 100 iterations and base learner
 
 			weka.classifiers.trees.RandomTree -K 0 -M 1.0 -V 0.001 -S 1 -do-not-check-capabilities
 
-			Time taken to build model: 19.41 seconds
+			Time taken to build model: 4.97 seconds
 
 			=== Evaluation on test set ===
 
-			Time taken to test model on supplied test set: 0.26 seconds
+			Time taken to test model on supplied test set: 0.08 seconds
 
 			=== Summary ===
 
-			Correctly Classified Instances         162               81      %
-			Incorrectly Classified Instances        38               19      %
-			Kappa statistic                          0.62  
-			Mean absolute error                      0.4203
-			Root mean squared error                  0.4289
-			Relative absolute error                 84.07   %
-			Root relative squared error             85.7719 %
+			Correctly Classified Instances         167               83.5    %
+			Incorrectly Classified Instances        33               16.5    %
+			Kappa statistic                          0.67  
+			Mean absolute error                      0.3649
+			Root mean squared error                  0.3904
+			Relative absolute error                 72.98   %
+			Root relative squared error             78.0846 %
 			Total Number of Instances              200     
 
 			=== Detailed Accuracy By Class ===
 
-			                 TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
-			                 0.750    0.130    0.852      0.750    0.798      0.625    0.905     0.911     pos
-			                 0.870    0.250    0.777      0.870    0.821      0.625    0.905     0.893     neg
-			Weighted Avg.    0.810    0.190    0.815      0.810    0.809      0.625    0.905     0.902     
+			             TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
+			             0.830    0.160    0.838      0.830    0.834      0.670    0.906     0.904     pos
+			             0.840    0.170    0.832      0.840    0.836      0.670    0.906     0.878     neg
+			Weighted Avg.    0.835    0.165    0.835      0.835    0.835      0.670    0.906     0.891     
 
 			=== Confusion Matrix ===
 
-			  a  b   <-- classified as
-			 75 25 |  a = pos
-			 13 87 |  b = neg
-## NaiveBayes (TRAIN TAGGED):
-			=== Stratified cross-validation ===
-			=== Summary ===
+			a  b   <-- classified as
+			83 17 |  a = pos
+			16 84 |  b = neg
+## LibLinear (TRAIN):
+	=== Run information ===
 
-			Correctly Classified Instances        1128               70.5    %
-			Incorrectly Classified Instances       472               29.5    %
-			Kappa statistic                          0.41  
-			Mean absolute error                      0.2959
-			Root mean squared error                  0.5425
-			Relative absolute error                 59.1764 %
-			Root relative squared error            108.4928 %
-			Total Number of Instances             1600     
+	Scheme:       weka.classifiers.functions.LibLINEAR -S 1 -C 1.0 -E 0.001 -B 1.0 -L 0.1 -I 1000
+	Relation:     movie-review
+	Instances:    1600
+	Attributes:   1357
+	              [list of attributes omitted]
+	Test mode:    10-fold cross-validation
 
-			=== Detailed Accuracy By Class ===
+	=== Classifier model (full training set) ===
 
-			                 TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
-			                 0.750    0.340    0.688      0.750    0.718      0.412    0.733     0.673     pos
-			                 0.660    0.250    0.725      0.660    0.691      0.412    0.769     0.728     neg
-			Weighted Avg.    0.705    0.295    0.707      0.705    0.704      0.412    0.751     0.700     
+	LibLINEAR wrapper
 
-			=== Confusion Matrix ===
+	Model bias=1.0 nr_class=2 nr_feature=1357 solverType=L2R_L2LOSS_SVC_DUAL
 
-			   a   b   <-- classified as
-			 600 200 |   a = pos
-			 272 528 |   b = neg
-## NaiveBayes (TEST TAGGED):
-			=== Evaluation on test set ===
+	=== Stratified cross-validation ===
+	=== Summary ===
 
-			Time taken to test model on supplied test set: 1.18 seconds
+	Correctly Classified Instances        1281               80.0625 %
+	Incorrectly Classified Instances       319               19.9375 %
+	Kappa statistic                          0.6013
+	Mean absolute error                      0.1994
+	Root mean squared error                  0.4465
+	Relative absolute error                 39.875  %
+	Root relative squared error             89.3029 %
+	Total Number of Instances             1600     
 
-			=== Summary ===
+	=== Detailed Accuracy By Class ===
 
-			Correctly Classified Instances         144               72      %
-			Incorrectly Classified Instances        56               28      %
-			Kappa statistic                          0.44  
-			Mean absolute error                      0.2795
-			Root mean squared error                  0.528 
-			Relative absolute error                 55.8993 %
-			Root relative squared error            105.6084 %
-			Total Number of Instances              200     
+	                 TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
+	                 0.809    0.208    0.796      0.809    0.802      0.601    0.801     0.739     pos
+	                 0.793    0.191    0.806      0.793    0.799      0.601    0.801     0.742     neg
+	Weighted Avg.    0.801    0.199    0.801      0.801    0.801      0.601    0.801     0.741     
 
-			=== Detailed Accuracy By Class ===
+	=== Confusion Matrix ===
 
-			                 TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
-			                 0.780    0.340    0.696      0.780    0.736      0.443    0.751     0.693     pos
-			                 0.660    0.220    0.750      0.660    0.702      0.443    0.768     0.733     neg
-			Weighted Avg.    0.720    0.280    0.723      0.720    0.719      0.443    0.760     0.713     
+	   a   b   <-- classified as
+	 647 153 |   a = pos
+	 166 634 |   b = neg
+## LibLinear (TEST):
+	=== Run information ===
 
-			=== Confusion Matrix ===
+	Scheme:       weka.classifiers.functions.LibLINEAR -S 1 -C 1.0 -E 0.001 -B 1.0 -L 0.1 -I 1000
+	Relation:     movie-review
+	Instances:    1600
+	Attributes:   1357
+	              [list of attributes omitted]
+	Test mode:    user supplied test set:  size unknown (reading incrementally)
 
-			  a  b   <-- classified as
-			 78 22 |  a = pos
-			 34 66 |  b = neg
-## SVM (TRAIN TAGGED):
-			=== Classifier model (full training set) ===
+	=== Classifier model (full training set) ===
 
-			LibSVM wrapper, original code by Yasser EL-Manzalawy (= WLSVM)
+	LibLINEAR wrapper
 
-			Time taken to build model: 6.82 seconds
+	Model bias=1.0 nr_class=2 nr_feature=1357 solverType=L2R_L2LOSS_SVC_DUAL
 
-			=== Stratified cross-validation ===
-			=== Summary ===
+	=== Evaluation on test set ===
 
-			Correctly Classified Instances         800               50      %
-			Incorrectly Classified Instances       800               50      %
-			Kappa statistic                          0     
-			Mean absolute error                      0.5   
-			Root mean squared error                  0.7071
-			Relative absolute error                100      %
-			Root relative squared error            141.4214 %
-			Total Number of Instances             1600     
+	Time taken to test model on supplied test set: 0.04 seconds
 
-			=== Detailed Accuracy By Class ===
+	=== Summary ===
 
-			                 TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
-			                 0.000    0.000    0.000      0.000    0.000      0.000    0.500     0.500     pos
-			                 1.000    1.000    0.500      1.000    0.667      0.000    0.500     0.500     neg
-			Weighted Avg.    0.500    0.500    0.250      0.500    0.333      0.000    0.500     0.500     
+	Correctly Classified Instances         153               76.5    %
+	Incorrectly Classified Instances        47               23.5    %
+	Kappa statistic                          0.53  
+	Mean absolute error                      0.235 
+	Root mean squared error                  0.4848
+	Relative absolute error                 47      %
+	Root relative squared error             96.9536 %
+	Total Number of Instances              200     
 
-			=== Confusion Matrix ===
+	=== Detailed Accuracy By Class ===
 
-			   a   b   <-- classified as
-			   0 800 |   a = pos
-			   0 800 |   b = neg
-## SVM (TEST TAGGED):
-			   === Evaluation on test set ===
+	                 TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
+	                 0.760    0.230    0.768      0.760    0.764      0.530    0.765     0.703     pos
+	                 0.770    0.240    0.762      0.770    0.766      0.530    0.765     0.702     neg
+	Weighted Avg.    0.765    0.235    0.765      0.765    0.765      0.530    0.765     0.703     
 
-				Time taken to test model on supplied test set: 1.02 seconds
+	=== Confusion Matrix ===
 
-				=== Summary ===
+	  a  b   <-- classified as
+	 76 24 |  a = pos
+	 23 77 |  b = neg
+## SVM SPegasos (TRAIN TAGGED):
+	=== Run information ===
 
-				Correctly Classified Instances         101               50.5    %
-				Incorrectly Classified Instances        99               49.5    %
-				Kappa statistic                          0.01  
-				Mean absolute error                      0.495 
-				Root mean squared error                  0.7036
-				Relative absolute error                 99      %
-				Root relative squared error            140.7125 %
-				Total Number of Instances              200     
+	Scheme:       weka.classifiers.functions.SPegasos -F 0 -L 1.0E-4 -E 500
+	Relation:     movie-review
+	Instances:    1600
+	Attributes:   1357
+	              [list of attributes omitted]
+	Test mode:    10-fold cross-validation
 
-				=== Detailed Accuracy By Class ===
+	=== Classifier model (full training set) ===
 
-				                 TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
-				                 0.010    0.000    1.000      0.010    0.020      0.071    0.505     0.505     pos
-				                 1.000    0.990    0.503      1.000    0.669      0.071    0.505     0.503     neg
-				Weighted Avg.    0.505    0.495    0.751      0.505    0.344      0.071    0.505     0.504     
+	Loss function: Hinge loss (SVM)
+	=== Stratified cross-validation ===
+	=== Summary ===
 
-				=== Confusion Matrix ===
+	Correctly Classified Instances        1362               85.125  %
+	Incorrectly Classified Instances       238               14.875  %
+	Kappa statistic                          0.7025
+	Mean absolute error                      0.1487
+	Root mean squared error                  0.3857
+	Relative absolute error                 29.75   %
+	Root relative squared error             77.1362 %
+	Total Number of Instances             1600     
 
-				   a   b   <-- classified as
-				   1  99 |   a = pos
-				   0 100 |   b = neg
+	=== Detailed Accuracy By Class ===
+
+	                 TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
+	                 0.853    0.150    0.850      0.853    0.851      0.703    0.851     0.799     pos
+	                 0.850    0.148    0.852      0.850    0.851      0.703    0.851     0.799     neg
+	Weighted Avg.    0.851    0.149    0.851      0.851    0.851      0.703    0.851     0.799     
+
+	=== Confusion Matrix ===
+
+	   a   b   <-- classified as
+	 682 118 |   a = pos
+	 120 680 |   b = neg
+## SVM SPegasos (TEST TAGGED):
+	=== Run information ===
+
+	Scheme:       weka.classifiers.functions.SPegasos -F 0 -L 1.0E-4 -E 500
+	Relation:     movie-review
+	Instances:    1600
+	Attributes:   1357
+	              [list of attributes omitted]
+	Test mode:    user supplied test set:  size unknown (reading incrementally)
+
+	=== Classifier model (full training set) ===
+
+	Loss function: Hinge loss (SVM)
+	=== Evaluation on test set ===
+
+	Time taken to test model on supplied test set: 0.04 seconds
+
+	=== Summary ===
+
+	Correctly Classified Instances         150               75      %
+	Incorrectly Classified Instances        50               25      %
+	Kappa statistic                          0.5   
+	Mean absolute error                      0.25  
+	Root mean squared error                  0.5   
+	Relative absolute error                 50      %
+	Root relative squared error            100      %
+	Total Number of Instances              200     
+
+	=== Detailed Accuracy By Class ===
+
+	                 TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
+	                 0.700    0.200    0.778      0.700    0.737      0.503    0.750     0.694     pos
+	                 0.800    0.300    0.727      0.800    0.762      0.503    0.750     0.682     neg
+	Weighted Avg.    0.750    0.250    0.753      0.750    0.749      0.503    0.750     0.688     
+
+	=== Confusion Matrix ===
+
+	  a  b   <-- classified as
+	 70 30 |  a = pos
+	 20 80 |  b = neg
 
 
 ## TASK 2 - NGRAM
