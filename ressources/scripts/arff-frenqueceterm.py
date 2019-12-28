@@ -41,7 +41,17 @@ for p in POS:
         words = f.read().split()
         for term in TERMS:
             if term in words:
-                print words.count(term)/len(words),
+                if term[:2] == 'JJ':
+                    ff = float(words.count(term) * 100/len(words))
+                elif term[:2] == 'VB':
+                    ff = float(words.count(term) * 80/len(words))
+                elif term[:2] == 'RB':
+                    ff = float(words.count(term) * 40/len(words))
+                else :
+                    ff = float(words.count(term)/len(words))
+                ff = ff *10
+                print "%.2f" % ff,
+                
             else:
                 print 0.0,
             
@@ -51,7 +61,16 @@ for n in NEG:
         words = f.read().split()
         for term in TERMS:
             if term in words:
-                print words.count(term)/len(words),
+                if term[:2] == 'JJ':
+                    ff = float(words.count(term) * 100/len(words))
+                elif term[:2] == 'VB':
+                    ff = float(words.count(term) * 80/len(words))
+                elif term[:2] == 'RB':
+                    ff = float(words.count(term) * 40/len(words))
+                else :
+                    ff = float(words.count(term)/len(words))
+                ff = ff *10
+                print "%.2f" % ff,
             else:
                 print 0.0,
         print 'neg'

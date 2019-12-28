@@ -324,9 +324,9 @@
 
 						- for train dataset:
 							- for pos-tagged:
-								$ for f in train-tagged/pos/*.txt; do python2.7 ../ressources/scripts/trim-tagged.py ../ressources/stopwords.txt <$f >train-tagged/pos-tagged/`basename $f`; done
+								$ for f in train-tagged/pos/*.txt; do python2.7 ../ressources/scripts/trim-tagged2.py ../ressources/stopwords.txt <$f >train-tagged/pos-tagged/`basename $f`; done
 							- for neg-tagged:
-								$ for f in train-tagged/neg/*.txt; do python2.7 ../ressources/scripts/trim-tagged.py ../ressources/stopwords.txt <$f >train-tagged/neg-tagged/`basename $f`; done
+								$ for f in train-tagged/neg/*.txt; do python2.7 ../ressources/scripts/trim-tagged2.py ../ressources/stopwords.txt <$f >train-tagged/neg-tagged/`basename $f`; done
 
 						- for test dataset:
 							- for pos-tagged:
@@ -337,21 +337,22 @@
 					- Combine the two classes (train-tagged)
 							$ cat train-tagged/pos-tagged/*.txt > train-tagged/pos-tagged.txt
 							$ cat train-tagged/neg-tagged/*.txt > train-tagged/neg-tagged.txt
-					- Combine the two classes (train-tagged)
+					- Combine the two classes (test-tagged)
 							$ cat test-tagged/pos-tagged/*.txt > test-tagged/pos-tagged.txt
 							$ cat test-tagged/neg-tagged/*.txt > test-tagged/neg-tagged.txt
 
 
 					- Generate the dictionary file that contains all vocabulary terms corresponding to the set of
 					  all attributes appearing in the vector representation of documents.
+					  		- 86% :
+					  		$ python2.7 ../ressources/scripts/vocab.py train-tagged/pos-tagged.txt train-tagged/neg-tagged.txt 0.45 15 > train-tagged/v-tagged.txt
 
-					  		$ python2.7 ../ressources/scripts/vocab.py train-tagged/pos-tagged.txt train-tagged/neg-tagged.txt 0.1 5 > train-tagged/v-tagged.txt
 
 					  		
 					- Generate train-2.arff
-					  		$ python2.7 ../ressources/scripts/arff-frenqueceterm.py train-tagged/v-tagged.txt train-tagged/pos-tagged/ train-tagged/neg-tagged/ > train-tagged/train-2.arff
+					  		$ python2.7 ../ressources/scripts/arff-frenqueceterm.py train-tagged/v-tagged.txt train-tagged/pos-tagged/ train-tagged/neg-tagged/ > train-tagged/train-tagged.arff
 
-					  		$ python2.7 ../ressources/scripts/arff-frenqueceterm.py train-tagged/v-tagged.txt test-tagged/pos-tagged/ test-tagged/neg-tagged/ > test-tagged/test-2.arff
+					  		$ python2.7 ../ressources/scripts/arff-frenqueceterm.py train-tagged/v-tagged.txt test-tagged/pos-tagged/ test-tagged/neg-tagged/ > test-tagged/test-tagged.arff
 
 ## RandomForest (TRAIN TAGGED):
 
@@ -363,32 +364,32 @@
 
 			weka.classifiers.trees.RandomTree -K 0 -M 1.0 -V 0.001 -S 1 -do-not-check-capabilities
 
-			Time taken to build model: 18.8 seconds
+			Time taken to build model: 4.97 seconds
 
 			=== Stratified cross-validation ===
 			=== Summary ===
 
-			Correctly Classified Instances        1282               80.125  %
-			Incorrectly Classified Instances       318               19.875  %
-			Kappa statistic                          0.6025
-			Mean absolute error                      0.4233
-			Root mean squared error                  0.4331
-			Relative absolute error                 84.6575 %
-			Root relative squared error             86.6186 %
+			Correctly Classified Instances        1385               86.5625 %
+			Incorrectly Classified Instances       215               13.4375 %
+			Kappa statistic                          0.7312
+			Mean absolute error                      0.3563
+			Root mean squared error                  0.3803
+			Relative absolute error                 71.265  %
+			Root relative squared error             76.0513 %
 			Total Number of Instances             1600     
 
 			=== Detailed Accuracy By Class ===
 
 			                 TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
-			                 0.766    0.164    0.824      0.766    0.794      0.604    0.881     0.885     pos
-			                 0.836    0.234    0.782      0.836    0.808      0.604    0.881     0.863     neg
-			Weighted Avg.    0.801    0.199    0.803      0.801    0.801      0.604    0.881     0.874     
+			                 0.843    0.111    0.883      0.843    0.862      0.732    0.927     0.926     pos
+			                 0.889    0.158    0.849      0.889    0.869      0.732    0.927     0.915     neg
+			Weighted Avg.    0.866    0.134    0.866      0.866    0.866      0.732    0.927     0.921     
 
 			=== Confusion Matrix ===
 
 			   a   b   <-- classified as
-			 613 187 |   a = pos
-			 131 669 |   b = neg
+			 674 126 |   a = pos
+			  89 711 |   b = neg
 ## RandomForest (TEST TAGGED):
 			RandomForest
 
@@ -548,7 +549,7 @@
 
 			$ for f in train-tagged/pos/*.txt; do python2.7 ../ressources/scripts/ngram-tagged.py ../ressources/stopwords.txt <$f >train-ngram/pos-ngram-tagged/`basename $f`; done
 
-			$ for f in train-tagged/pos/*.txt; do python2.7 ../ressources/scripts/ngram-tagged.py ../ressources/stopwords.txt <$f >train-ngram/neg-ngram-tagged/`basename $f`; done
+			$ for f in train-tagged/neg/*.txt; do python2.7 ../ressources/scripts/ngram-tagged.py ../ressources/stopwords.txt <$f >train-ngram/neg-ngram-tagged/`basename $f`; done
 
 
 			$ for f in test-tagged/pos/*.txt; do python2.7 ../ressources/scripts/ngram-tagged.py ../ressources/stopwords.txt <$f >test-ngram/pos-ngram-tagged/`basename $f`; done
@@ -557,7 +558,7 @@
 			$ cat train-ngram/pos-ngram-tagged/*.txt > train-ngram/pos-ngram.txt
 			$ cat train-ngram/neg-ngram-tagged/*.txt > train-ngram/neg-ngram.txt
 
-		$ python2.7 ../ressources/scripts/vocab.py train-ngram/pos-ngram.txt train-ngram/neg-ngram.txt 0.1 5 > train-ngram/v-tagged.txt
+		$ python2.7 ../ressources/scripts/vocab-wn.py train-ngram/pos-ngram.txt train-ngram/neg-ngram.txt 0.1 5 > train-ngram/v-tagged.txt
 
 		$ python2.7 ../ressources/scripts/arff-frenqueceterm.py train-ngram/v-tagged.txt train-ngram/pos-ngram-tagged/ train-ngram/neg-ngram-tagged/ > train-ngram/train-ngram.arff
 
