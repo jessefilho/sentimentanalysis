@@ -591,10 +591,10 @@
 			$ cat train-ngram/neg-ngram/*.txt > train-ngram/neg-ngram.txt
 		
 		- Vocab:
-			- settings for 2-gram:
+			-- settings for 2-gram:
 				$ python2.7 ../ressources/scripts/vocab.py train-ngram/pos-ngram.txt train-ngram/neg-ngram.txt 0.65 4 > train-ngram/v-tagged.txt
 
-			- Settings for 3-gram:
+			-- settings for 3-gram:
 				$ python2.7 ../ressources/scripts/vocab.py train-ngram/pos-ngram.txt train-ngram/neg-ngram.txt 0.1 5 > train-ngram/v-tagged.txt
 
 		- arff TRAIN:

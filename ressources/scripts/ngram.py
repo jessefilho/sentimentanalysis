@@ -23,7 +23,7 @@ def term(token):
 
 
 # set nggram here
-n = 1
+n = 2
 bag = []
 for token in sys.stdin:
     token = token.strip().split()
@@ -34,9 +34,9 @@ for token in sys.stdin:
     for tag in TAGS:
             if tag in token[1]:
                 if token[2] == '<unknown>':
-                    word = '%s%s' % (term(token[0]))
+                    word = '%s' % (term(token[0]))
                 else:
-                    word = '%s%s' % (term(token[2]))
+                    word = '%s' % (term(token[2]))
     
     
     bag.append(word)
